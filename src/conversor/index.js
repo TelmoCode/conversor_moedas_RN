@@ -1,6 +1,8 @@
+
 import React, {Component} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from  'react-native';
 
+import api from '../services/api';
 
 class Conversor extends Component{
 
@@ -8,7 +10,7 @@ constructor(props){
   super(props);
   this.state={
 
-    resultado: 10.0,
+    resultado: 0.0,
     moedaA : props.moedaA,
     moedaB: props.moedaB,
     moedaB_valor: 0
@@ -18,9 +20,17 @@ constructor(props){
   this.converter=this.converter.bind(this)
 
 }
-
-converter(){
-
+//convert?q=USD_BRL&compact=ultra&apiKey=9448fef49edf6bb516e5
+async converter(){
+  const {moedaA, moedaB} = this.props
+  let de_para = moedaA +'_'+ moedaB
+  const response = await api.get(`convert?q=${de_para}&compact=ultra&apiKey=9448fef49edf6bb516e5`)
+  const cotacao = response.data[de_para]
+  let vresultado = (cotacao * parseFloat(this.state.moedaB_valor));
+  //alert(vresultado)
+  this.setState({resultado: vresultado.toFixed(2)})
+  console.log(this.state.moedaB_valor)
+  
 }
 
     render(){
@@ -35,20 +45,19 @@ converter(){
               placeholder='Valor a ser convertido'
               keyboardType='numeric'
               style={styles.areaInput}
-              onChange={(moedaB_valor) => {this.setState({
-                moedaB_valor:moedaB_valor
-              })}}
+              onChangeText={(valor) => this.setState({moedaB_valor:valor
+              })}
             />
       
             <TouchableOpacity 
             style={styles.btnArea}
-            onPress={this.converter()}
-            
+            onPress={this.converter}
             >
               <Text style={styles.btnTexto}>Converter</Text>
             </TouchableOpacity>
 
             <Text style={styles.resultado}>{this.state.resultado}</Text>
+
           </View>
         );
        
@@ -85,8 +94,7 @@ const styles = StyleSheet.create({
 
   btnArea:{
     borderRadius:5,
-    backgroundColor: '#090',
-    borderColor:'#040',
+    backgroundColor: '#00f',
     padding:10,
     marginTop:15
 
