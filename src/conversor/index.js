@@ -3,13 +3,16 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput } from  'react-nati
 
 
 class Conversor extends Component{
-// https://free.currconv.com/api/v7/convert?q=USD_BRL&compact=ultra&apiKey=9448fef49edf6bb516e5
 
 constructor(props){
   super(props);
   this.state={
 
-    resultado: 10.0
+    resultado: 10.0,
+    moedaA : props.moedaA,
+    moedaB: props.moedaB,
+    moedaB_valor: 0
+
 
   }
   this.converter=this.converter.bind(this)
@@ -32,10 +35,16 @@ converter(){
               placeholder='Valor a ser convertido'
               keyboardType='numeric'
               style={styles.areaInput}
-              onChange={() => {}}
+              onChange={(moedaB_valor) => {this.setState({
+                moedaB_valor:moedaB_valor
+              })}}
             />
       
-            <TouchableOpacity style={styles.btnArea}>
+            <TouchableOpacity 
+            style={styles.btnArea}
+            onPress={this.converter()}
+            
+            >
               <Text style={styles.btnTexto}>Converter</Text>
             </TouchableOpacity>
 
